@@ -5,9 +5,42 @@ import fs from 'fs'
 
 describe('Product API Error Handling', () => {
   before(() => {
+    // Reset data before tests
     if (!fs.existsSync('./data/products.json')) {
       fs.writeFileSync('./data/products.json', JSON.stringify([]));
+    } else {
+      fs.writeFileSync('./data/products.json', JSON.stringify([]));
     }
+  });
+
+  let createdProductId;
+
+  // ✅ CREATE - success case
+  it('should create a new product successfully', async () => {
+    const res = await request(app)
+      .post('/products')
+      .send({ name: 'Laptop', price: 1200 });
+
+    expect(res.status).to.equal(201);
+    expect(res.body).to.include({ name: 'Laptop', price: 1200 });
+    expect(res.body).to.have.property('id');
+    createdProductId = res.body.id;
+  });
+
+  // ✅ READ - fetch all
+  it('should return all products including the created one', async () => {
+    const res = await request(app).get('/products');
+    expect(res.status).to.equal(200);
+    expect(res.body).to.be.an('array');
+    expect(res.body.length).to.be.greaterThan(0);
+    expect(res.body.some(p => p.name === 'Laptop')).to.be.true;
+  });
+
+  // ✅ READ - fetch by ID
+  it('should return a product by ID', async () => {
+    const res = await request(app).get(`/products/${createdProductId}`);
+    expect(res.status).to.equal(200);
+    expect(res.body).to.have.property('name', 'Laptop');
   });
 
   it('should return all products', async () => {
@@ -42,4 +75,6 @@ describe('Product API Error Handling', () => {
     expect(res.body).to.have.property('error', 'Internal Server Error');
     fs.writeFileSync('./data/products.json', backup);
   });
+
+  
 });
