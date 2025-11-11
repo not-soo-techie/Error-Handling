@@ -2,24 +2,21 @@ import fs from 'fs/promises'
 import path from 'path'
 import { fileURLToPath } from 'url';
 
-// Recreate __filename and __dirname
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const dataFile = path.join(__dirname, '../data/products.json');
 
-// Helper to read data
 const readData = async () => {
   const data = await fs.readFile(dataFile, 'utf-8');
   return JSON.parse(data);
 };
 
-// Helper to write data
 const writeData = async (data) => {
   await fs.writeFile(dataFile, JSON.stringify(data, null, 2));
 };
 
-// GET /products
+// [To-Do 1] 👉 Read products from JSON file
 export const getAllProducts = async (req, res, next) => {
   try {
     const products = await readData();
@@ -29,7 +26,7 @@ export const getAllProducts = async (req, res, next) => {
   }
 };
 
-// GET /products/:id
+// [To-Do 3] 👉 Handle product not found scenario and get Product by Id
 export const getProductById = async (req, res, next) => {
   try {
     const products = await readData();
@@ -45,7 +42,7 @@ export const getProductById = async (req, res, next) => {
   }
 };
 
-// POST /products
+// [To-Do 2] 👉 Handle Invalid product data scenario and create a new product
 export const addProduct = async (req, res, next) => {
   try {
     const { name, price } = req.body;
@@ -68,7 +65,6 @@ export const addProduct = async (req, res, next) => {
   }
 };
 
-// PUT /products/:id
 export const updateProduct = async (req, res, next) => {
   try {
     const id = parseInt(req.params.id);
@@ -94,7 +90,6 @@ export const updateProduct = async (req, res, next) => {
   }
 };
 
-// DELETE /products/:id
 export const deleteProduct = async (req, res, next) => {
   try {
     const id = parseInt(req.params.id);

@@ -6,15 +6,13 @@ import errorHandler from '../middleware/errorHandler.js'
 const app = express();
 app.use(express.json());
 
-// Routes
 app.use('/products', productRoutes);
 
-// Handle unknown routes
+// [To-Do 4] 👉 Handle unknown routes here (404)
 app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });
 });
 
-// Global error handler
 app.use(errorHandler);
 
 const PORT = 4545;
